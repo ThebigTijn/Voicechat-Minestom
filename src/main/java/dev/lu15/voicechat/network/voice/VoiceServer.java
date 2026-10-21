@@ -199,10 +199,11 @@ public final class VoiceServer {
 
         Map.copyOf(this.connections).forEach((address, player) -> {
             if (time - player.getTag(Tags.LAST_KEEP_ALIVE) > this.keepAlive * 10L) {
-                // todo: will the client be trying to reconnect?
-                LOGGER.warn("player {} did not send keepalive packet", player.getUsername());
-                player.kick(Component.text("Simple Voice Chat | Connection timed out.")); // todo: remove me, i'm a library
+                // Only the voice session goes, like upstream: a stall on our side would otherwise kick everyone at once.
+                // The client re-authenticates, which needs the address gone from connections.
+                LOGGER.warn("player {} did not send keepalive packet, dropping their voice connection", player.getUsername());
                 this.connections.remove(address);
+                player.removeTag(Tags.VOICE_CLIENT);
                 EventDispatcher.call(new PlayerLeaveVoiceChatEvent(player));
             } else this.write(player, new KeepAlivePacket());
         });

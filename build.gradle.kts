@@ -4,9 +4,9 @@ plugins {
 }
 
 group = "dev.lu15"
-version = "0.2.0-SNAPSHOT"
+version = "0.3.0-SNAPSHOT"
 
-var minestomCommit = "2026.05.11-1.21.11"
+var minestomCommit = "2026.08.28-26.2"
 
 // -----------------------------------------------------------------------
 // Repositories
@@ -26,9 +26,11 @@ repositories {
 
 dependencies {
     // --- Minestom ---
-    // Pin to the latest Minestom 1.21.x release; update as new builds land.
+    // Matches the lobby in WorldOfKingdoms (gradle/libs.versions.toml).
     // Check https://github.com/Minestom/Minestom/releases for the newest.
-    compileOnly("com.github.Minestom:Minestom:$minestomCommit")
+    compileOnly("net.minestom:minestom:$minestomCommit")
+    // Maven Central Minestom only has slf4j at runtime; the jitpack build exposed it.
+    compileOnly("org.slf4j:slf4j-api:2.0.17")
 
     // --- Opus codec (concentus – pure-Java, no native lib required) ---
     // Used by the CLIENT-SIDE mod; the server only re-routes raw bytes,
